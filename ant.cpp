@@ -2,7 +2,7 @@
 
 
 Ant::Ant()
-: speed(100), animLength(0.025)
+: speed(100), animLength(0.025), moving(false)
 {
     speed = 300;
     position = sf::Vector2f (75, 75);
@@ -56,6 +56,9 @@ void Ant::update(double time, double dt)
 
 
 }
+
+/*update the animation of the ant.
+  dt = change in time*/
 void Ant::updateAnim(double dt)
 {
     if (currentFrame.duration >= animLength)
