@@ -7,13 +7,13 @@ struct Frame {
     sf::IntRect rect;
     double duration; // seconds
     FrameDirection Direction;
-    FrameDirection RtLdirection;
-    FrameDirection UtDdirection;
 };
 
 class Ant
 {
 private:
+    default_random_engine generator;
+    uniform_real_distribution<double> distribution;
     sf::Vector2f position;
     sf::Vector2f velocity;
     sf::Vector2f direction;
@@ -28,6 +28,7 @@ private:
 public:
     Ant();
     void input();
+    void makeMove(double dt);
     void update(double time, double dt);
     void updateAnim(double dt);
     void updatePos(double time, double dt);
@@ -39,6 +40,4 @@ public:
     sf::Sprite getSprite();
     float getSpeed();
     sf::Vector2f getPosition();
-
-
 };

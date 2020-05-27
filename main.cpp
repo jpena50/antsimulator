@@ -5,11 +5,6 @@ sf::RenderWindow mywindow(sf::VideoMode(1000, 800, 32), "Ant Simulator");
 sf::Event ev;
 
 
-
-
-
-
-
 int main()
 {
     mywindow.setVerticalSyncEnabled(true); // 60 fps
@@ -51,6 +46,7 @@ int main()
         while (accumulator >= dt)
         {
             babyAnt.update(t, dt);
+            babyAnt.makeMove(dt);
             t += dt;
             accumulator -= dt;
         }

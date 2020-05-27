@@ -12,10 +12,8 @@ Ant::Ant()
     sprite.setScale(0.05,0.05);
     sprite.setPosition(position);
     currentFrame.duration = 0;
-    currentFrame.RtLdirection = kForward;
-    currentFrame.UtDdirection = kForward;
     currentFrame.Direction = kForward;
-
+    distribution = uniform_real_distribution<double>(0.0, 1.0);
 }
 
 
@@ -49,14 +47,22 @@ void Ant::input()
         cout << "Set Rotation to " << degrees << endl;
     }
 }
+
+/*need to make move by adding speed to velocity vector
+  how can i simplify levy flight? create 5 lengths and randomly
+  choose between them with given probability. lengths 1-3 80% and lengths 4-5 20%
+  lengths 1-3 are varying degrees of short length. 4-5 are varying degrees of long length
+  this is an attempt to mimic levy flight with less math.*/
+void Ant::makeMove(double dt)
+{
+    double number = distribution(generator);
+    cout << number << endl << endl;
+}
 void Ant::update(double time, double dt)
 {
     updatePos(time, dt);
     updateAnim(dt);
-
-
 }
-
 /*update the animation of the ant.
   dt = change in time*/
 void Ant::updateAnim(double dt)
