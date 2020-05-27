@@ -183,12 +183,10 @@
     <ClCompile Include="calculations.cpp" />
     <ClCompile Include="ant.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Animation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="calculations.h" />
     <ClInclude Include="ant.h" />
-    <ClInclude Include="Animation.h" />
     <ClInclude Include="includes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

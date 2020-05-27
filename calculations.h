@@ -1,3 +1,4 @@
+/*Copyright Javier Pena*/
 #pragma once
 # define PI 3.14159265358979323846
 #include <SFML/Graphics.hpp>

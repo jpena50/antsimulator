@@ -1,3 +1,4 @@
+/*Copyright Javier Pena*/
 #include "ant.h"
 
 

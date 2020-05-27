@@ -1,3 +1,5 @@
+/*Copyright Javier Pena*/
+
 #pragma once
 #include "includes.h"
 

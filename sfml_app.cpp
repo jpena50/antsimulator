@@ -1,4 +1,5 @@
-
+/*Copyright Javier Pena
+  my testing site*/
 #include "calculations.h"
 
 

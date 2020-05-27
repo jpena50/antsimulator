@@ -1,12 +1,16 @@
+/*Copyright Javier Pena*/
 #include "ant.h"
 using namespace std;
 
-sf::RenderWindow mywindow(sf::VideoMode(1000, 800, 32), "Ant Simulator");
-sf::Event ev;
+
 
 
 int main()
 {
+    sf::RenderWindow mywindow(sf::VideoMode(1000, 800, 32), "Ant Simulator");
+    sf::Event ev;
+
+
     mywindow.setVerticalSyncEnabled(true); // 60 fps
     Ant babyAnt;
     double t = 0;
