@@ -1,5 +1,4 @@
-/*Copyright Javier Pena
-  my testing site*/
+
 #include "calculations.h"
 
 
@@ -17,7 +16,7 @@ int main3()
     sf::CircleShape* circlePtr = &circle;
     sf::RectangleShape* rectPtr = &rect;
 
-    float xPos, yPos, windowXEdge, windowYEdge, diameter;
+    float windowXEdge, windowYEdge, diameter;
     unsigned int windowX, windowY;
     bool xFlag = false;
     bool yFlag = false;

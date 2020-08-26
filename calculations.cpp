@@ -1,4 +1,4 @@
-/*Copyright Javier Pena*/
+
 #include "calculations.h"
 
 

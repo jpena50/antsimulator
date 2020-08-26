@@ -1,5 +1,3 @@
-/*Copyright Javier Pena*/
-
 #pragma once
 #include "includes.h"
 
@@ -19,18 +17,22 @@ private:
     sf::Vector2f position;
     sf::Vector2f velocity;
     sf::Vector2f direction;
+    sf::Vector2f destination;
     sf::Texture texture;
     sf::Sprite sprite;
     sf::IntRect rectangle;
     Frame currentFrame;
+    float lengths[5];
     double animLength;
     float speed;
     bool moving;
+    bool atDestination;
 
 public:
     Ant();
     void input();
-    void makeMove(double dt);
+    //void makeMove(double dt);
+    void nextMove();
     void update(double time, double dt);
     void updateAnim(double dt);
     void updatePos(double time, double dt);

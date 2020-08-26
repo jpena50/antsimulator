@@ -1,20 +1,25 @@
-/*Copyright Javier Pena*/
 #include "ant.h"
+#include "simulator.h"
 
 
-Ant::Ant()
-: speed(100), animLength(0.025), moving(false)
+Ant::Ant():
+speed(300), 
+animLength(0.025), 
+moving(false), 
+lengths{10, 20, 30, 200, 500}, 
+atDestination(true)
 {
-    speed = 300;
-    position = sf::Vector2f (75, 75);
-    velocity = sf::Vector2f(0, 0);
-    direction = sf::Vector2f(0,0);
+    position = sf::Vector2f (75, 75);//current position.
+    destination = sf::Vector2f(75, 75);
+    velocity = sf::Vector2f(0, 0);//speed at which we are moving.
+    direction = sf::Vector2f(0,0);//direction we are moving in.
     //width 538 length 759
-    sprite.setScale(0.05,0.05);
+    sprite.setScale(0.1,0.1);// target scale 0.05; stream scale 0.1;
     sprite.setPosition(position);
     currentFrame.duration = 0;
     currentFrame.Direction = kForward;
     distribution = uniform_real_distribution<double>(0.0, 1.0);
+ 
 }
 
 
@@ -53,14 +58,77 @@ void Ant::input()
   how can i simplify levy flight? create 5 lengths and randomly
   choose between them with given probability. lengths 1-3 80% and lengths 4-5 20%
   lengths 1-3 are varying degrees of short length. 4-5 are varying degrees of long length
-  this is an attempt to mimic levy flight with less math.*/
-void Ant::makeMove(double dt)
+  As for direction I shall create a probability of choosing an angle between [-120, 120]
+  with a probability of 90% and 10% for angles between [-180, -120] and [120, 180] 
+  to calculate next point. Afterwards update direction vector and
+  make sure it is normalized to desired speed.*/
+void Ant::nextMove()
 {
+
+    //choose next point.
+    //check if within bounds.
+    ////how to get window size.
+    //set destination.
+    //where to check if we are at our destination? beginning?
+
+
+    if (atDestination)//when do modify this variable?
+    {
+        return;
+    }
+
+
     double number = distribution(generator);
-    cout << number << endl << endl;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //double number = distribution(generator);
+    ////cout << number << endl << endl;
+
+    //if (number >= 0 && number <= 0.2666)
+    //{
+    //    cout << "length 1" << endl << endl;
+    //    velocity.x += speed;
+
+    //}
+    //else if (number > 0.2666 && number <= 0.5333)
+    //{
+    //    cout << "length 2" << endl << endl;
+    //    velocity.x -= speed;
+    //}
+    //else if (number > 0.5333 && number <= 0.80)
+    //{
+    //    cout << "length 3" << endl << endl;
+    //    velocity.y += speed;
+    //}
+    //else if (number > 0.80 && number <= 0.90)
+    //{
+    //    cout << "length 4" << endl << endl;
+    //    velocity.y -= speed;
+    //}
+    //else if (number > 0.90 && number <= 1)
+    //{
+    //    cout << "length 5" << endl << endl;
+    //    velocity.x += speed;
+    //    velocity.y += speed;
+    //}
 }
+
 void Ant::update(double time, double dt)
 {
+    //makeMove(dt);
+    //nextMove();
     updatePos(time, dt);
     updateAnim(dt);
 }
