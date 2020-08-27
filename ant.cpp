@@ -2,24 +2,25 @@
 #include "simulator.h"
 
 
-Ant::Ant():
-speed(300), 
+Ant::Ant(sf::IntRect rectangle, Simulator *simulator):
+speed(150), 
 animLength(0.025), 
 moving(false), 
 lengths{10, 20, 30, 200, 500}, 
-atDestination(true)
+atDestination(true),
+currentFrame{ rectangle, 0, FrameDirection::kForward },
+sim(simulator)
+
 {
     position = sf::Vector2f (75, 75);//current position.
     destination = sf::Vector2f(75, 75);
     velocity = sf::Vector2f(0, 0);//speed at which we are moving.
     direction = sf::Vector2f(0,0);//direction we are moving in.
     //width 538 length 759
-    sprite.setScale(0.1,0.1);// target scale 0.05; stream scale 0.1;
+    sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
     sprite.setPosition(position);
-    currentFrame.duration = 0;
-    currentFrame.Direction = kForward;
+    std::mt19937_64 generator(time(0));
     distribution = uniform_real_distribution<double>(0.0, 1.0);
- 
 }
 
 
@@ -54,6 +55,26 @@ void Ant::input()
     }
 }
 
+sf::Vector2f getNormalizedVector(sf::Vector2f v1, sf::Vector2f v2)
+{
+    sf::Vector2f v3;
+    float magnitude;
+    v3.x = v2.x - v1.x;
+    v3.y = v2.y - v1.y;
+    magnitude = sqrt(v3.x * v3.x + v3.y * v3.y);
+    v3.x /= magnitude;
+    v3.y /= magnitude;
+
+    return v3;
+}
+
+bool isClose(sf::Vector2f v1, sf::Vector2f v2)
+{
+    float distance = sqrt(powf(v2.x - v1.x, 2) + powf(v2.y - v1.y, 2));
+    if (distance < 30)
+        return true;
+    else return false;
+}
 /*need to make move by adding speed to velocity vector
   how can i simplify levy flight? create 5 lengths and randomly
   choose between them with given probability. lengths 1-3 80% and lengths 4-5 20%
@@ -65,70 +86,33 @@ void Ant::input()
 void Ant::nextMove()
 {
 
-    //choose next point.
-    //check if within bounds.
-    ////how to get window size.
-    //set destination.
-    //where to check if we are at our destination? beginning?
+    if (isClose(position, destination))
+        atDestination = true;
+    
 
 
-    if (atDestination)//when do modify this variable?
+    if (atDestination)
     {
+        double number = distribution(generator);
+        destination.x = number * sim->getWindowSize().x;
+        number = distribution(generator);
+        destination.y = number * sim->getWindowSize().y;
+
+        cout << "destination x = " << destination.x << endl;
+        cout << "destination y = " << destination.y << endl << endl;
+        atDestination = false;
         return;
     }
+    velocity = getNormalizedVector(position, destination);
+    velocity.x *= speed;
+    velocity.y *= speed;
 
-
-    double number = distribution(generator);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //double number = distribution(generator);
-    ////cout << number << endl << endl;
-
-    //if (number >= 0 && number <= 0.2666)
-    //{
-    //    cout << "length 1" << endl << endl;
-    //    velocity.x += speed;
-
-    //}
-    //else if (number > 0.2666 && number <= 0.5333)
-    //{
-    //    cout << "length 2" << endl << endl;
-    //    velocity.x -= speed;
-    //}
-    //else if (number > 0.5333 && number <= 0.80)
-    //{
-    //    cout << "length 3" << endl << endl;
-    //    velocity.y += speed;
-    //}
-    //else if (number > 0.80 && number <= 0.90)
-    //{
-    //    cout << "length 4" << endl << endl;
-    //    velocity.y -= speed;
-    //}
-    //else if (number > 0.90 && number <= 1)
-    //{
-    //    cout << "length 5" << endl << endl;
-    //    velocity.x += speed;
-    //    velocity.y += speed;
-    //}
 }
 
 void Ant::update(double time, double dt)
 {
     //makeMove(dt);
-    //nextMove();
+    nextMove();
     updatePos(time, dt);
     updateAnim(dt);
 }
@@ -140,7 +124,7 @@ void Ant::updateAnim(double dt)
     {
         if (moving)
         {
-            if (currentFrame.Direction == kForward)
+            if (currentFrame.Direction == FrameDirection::kForward)
             {
                 /*increment col by 1
                   increasing rows*/
@@ -151,7 +135,7 @@ void Ant::updateAnim(double dt)
                     currentFrame.rect.top += currentFrame.rect.height;
                     if (currentFrame.rect.top > 1518)
                     {
-                        currentFrame.Direction = kReverse;
+                        currentFrame.Direction = FrameDirection::kReverse;
                         currentFrame.rect.top = 1518;
                         currentFrame.rect.left = 2152;
                         return;
@@ -170,7 +154,7 @@ void Ant::updateAnim(double dt)
                     currentFrame.rect.top -= currentFrame.rect.height;
                     if (currentFrame.rect.top < 0)
                     {
-                        currentFrame.Direction = kForward;
+                        currentFrame.Direction = FrameDirection::kForward;
                         currentFrame.rect.top = 0;
                         currentFrame.rect.left = 0;
                         return;
@@ -188,6 +172,7 @@ void Ant::updateAnim(double dt)
 }
 void Ant::updatePos(double time, double dt)
 {
+    
     if (velocity.x != 0 && velocity.y != 0)
     {
         velocity.x /= sqrt(2.f);
@@ -202,6 +187,7 @@ void Ant::updatePos(double time, double dt)
     velocity.y *= dt;
     setRotation(velocity);
     sprite.move(velocity);
+    setPosition(sprite.getPosition());
     moving = true;
 }
 void Ant::setRotation(sf::Vector2f velocity)
@@ -212,9 +198,9 @@ void Ant::setRotation(sf::Vector2f velocity)
         return;
     }
     
-    double angle = 0;
+    float angle = 0;
     angle = atan2(velocity.y, velocity.x); // atan2 is the right function (atan is bad in this context)
-    angle = angle * 180 / PI; // convert to degrees for SFML
+    angle = angle * 180.f / PI; // convert to degrees for SFML
     angle = angle + 90 % 360; // add 180 to map to SFML's drawing coordinates
 
     sprite.setRotation(angle);
@@ -238,8 +224,12 @@ void Ant::setSpeed(float s)
 }
 void Ant::setPosition(sf::Vector2f p)
 {
-    //do i just change the position vector or actually update sprite
-    //position
+    position.x = p.x;
+    position.y = p.y;
+}
+void Ant::setSimulator(Simulator *simulator)
+{
+    sim = simulator;
 }
 sf::Sprite Ant::getSprite()
 {

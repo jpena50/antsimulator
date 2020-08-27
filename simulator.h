@@ -7,6 +7,7 @@ class Simulator
 public:
 	Simulator();
 	void run();
+	sf::Vector2u getWindowSize();
 
 private:
 	enum class State
@@ -18,6 +19,6 @@ private:
 	} state = State::Ready;
 
 	sf::RenderWindow window;
-	sf::Vector2u getWindowSize();
+	
 
 };

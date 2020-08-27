@@ -20,7 +20,7 @@ void Simulator::run()
 
 
     window.setVerticalSyncEnabled(true); // 60 fps
-    Ant babyAnt;
+    
     double t = 0;
     const double dt = 0.01;
     double frameTime = 0;
@@ -32,6 +32,7 @@ void Simulator::run()
     sf::Clock clock;
     sf::Texture texture;
     sf::IntRect spriteRect(0, 0, 538, 759);
+    Ant babyAnt(spriteRect,this);
 
     if (!texture.loadFromFile("black-ant-walk.png"))
     {

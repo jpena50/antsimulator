@@ -1,7 +1,10 @@
 #pragma once
 #include "includes.h"
+#include "simulator.h"
+#include <random>
+#include <iostream>
 
-enum FrameDirection { kForward = 1, kReverse = -1 };
+enum class FrameDirection { kForward = 1, kReverse = -1 };
 
 struct Frame {
     sf::IntRect rect;
@@ -12,7 +15,9 @@ struct Frame {
 class Ant
 {
 private:
-    default_random_engine generator;
+    Simulator* sim;
+    std::random_device device;
+    std::mt19937_64 generator;
     uniform_real_distribution<double> distribution;
     sf::Vector2f position;
     sf::Vector2f velocity;
@@ -29,7 +34,7 @@ private:
     bool atDestination;
 
 public:
-    Ant();
+    Ant(sf::IntRect rectangle, Simulator* simulator);
     void input();
     //void makeMove(double dt);
     void nextMove();
@@ -41,6 +46,7 @@ public:
     void setRectangle(sf::IntRect* rect);
     void setSpeed(float s);
     void setPosition(sf::Vector2f p);
+    void setSimulator(Simulator* sim);
     sf::Sprite getSprite();
     float getSpeed();
     sf::Vector2f getPosition();
