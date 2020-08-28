@@ -1,61 +1,18 @@
-
 #include "calculations.h"
 
+using namespace std;
 
-void calcCircle(sf::CircleShape* circle, float windowXEdge, float windowYEdge)
-{
-    float xPos = (*circle).getPosition().x;
-    float yPos = (*circle).getPosition().y;
-    bool xFlag = false;
-    bool yFlag = false;
 
-    std::cout << "xPos = " << xPos << std::endl;
-    std::cout << "yPos = " << yPos << std::endl;
-    if (xPos >= windowXEdge)
-        xFlag = true;
-    else if (xPos <= 5)
-        xFlag = false;
 
-    if (yPos >= windowYEdge)
-        yFlag = true;
-    else if (yPos <= 5)
-        yFlag = false;
-
-    if (xFlag)
-        xPos = xPos - 0.2f;
-    else
-        xPos = xPos + 0.2f;
-
-    if (yFlag)
-        yPos = yPos - 0.1f;
-    else
-        yPos = yPos + 0.1f;
-
-    (*circle).setPosition(xPos, yPos);
-}
-
-/*converting and angle x degrees to radians is 2*pi * (x / 360)*/
 float degToRad(float angle)
 {
-    return 2 * (float)PI * (angle / 360.f);
+    return 2 * (float)M_PI * (angle / 360.f);
 }
-
-float vecLength(sf::Vector2f vector)
+float vectorLength(sf::Vector2f vector)
 {
     return sqrt(pow(vector.x, 2) + pow(vector.y, 2));
 }
-/*// Get absolute value of each vector
-ax = abs(x);
-ay = abs(y);
-
-// Create a ratio
-ratio = 1 / max(ax, ay)
-ratio = ratio * (1.29289 - (ax + ay) * ratio * 0.29289)
-
-// Multiply by ratio
-x = x * ratio
-y = y * ratio*/
-sf::Vector2f vecNormalize(sf::Vector2f vector)
+sf::Vector2f vectorNormalize(sf::Vector2f vector)
 {
     float x = vector.x;
     float y = vector.y;
@@ -71,8 +28,73 @@ sf::Vector2f vecNormalize(sf::Vector2f vector)
     return vector;
 
 }
+sf::Vector2f getNormalizedVector(sf::Vector2f v1, sf::Vector2f v2)
+{
+    sf::Vector2f v3, v4;
+    float magnitude;
+    v3.x = v2.x - v1.x;
+    v3.y = v2.y - v1.y;
+    v3 = vectorNormalize(v3);
+    //magnitude = vectorLength(v3);
+    //v3.x /= magnitude;
+    //v3.y /= magnitude;
+
+    //cout << "v3 = ";
+    //printVector(v3);
+
+    //cout << "v4 = ";
+    //printVector(v4);
+
+    return v3;
+}
+float standardNormal()
+{
+   /* standardNormalGenerate = !standardNormalGenerate;
+    if (standardNormalGenerate)
+    {
+        return standardNormal.y;
+    }
+
+    while (float u < FLT_EPSILON)
+    {
+        float u = rng->(generator);
+    }
+    */
+    return 0.f;
+
+}
+float gamma(float z)
+{
+    return sqrt(2 * M_PI / z) * powf((1 / M_E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
+}
+float getAngle(sf::Vector2f vector)
+{
+    if (vector.x == 0 && vector.y == 0)
+    {
+        return 0.f;
+    }
+
+    float angle = 0;
+    angle = atan2(vector.y, vector.x);
+    angle = angle * 180.f / (float) M_PI; // convert to degrees for SFML
+    angle = angle + 90;
+    return angle;
+}
+void printVector(sf::Vector2f vector)
+{
+    cout << "(" << vector.x << ", " << vector.y << ")" << endl;
+    return;
+}
+
+
+
+
 
 /*
+
+scratch notes.
+
+
 //first get the direction the entity is pointed
 direction.x = (float) Math.cos(Math.toRadians(rotation));
 direction.y = (float) Math.sin(Math.toRadians(rotation));
@@ -90,29 +112,3 @@ position.x += velocity.x * timeElapsed;
 position.y += velocity.y * timeElapsed;
 
 */
-sf::Vector2f calcRectPos(sf::RectangleShape rect, sf::Vector2f velocity, float windowXEdge, float windowYEdge)
-{
-    sf::Vector2f direction;
-    direction.x = cos(degToRad(rect.getRotation()));
-    direction.y = cos(degToRad(rect.getRotation()));
-
-    /*
-    if (vecLength(direction) > 0)
-    {
-        direction = vecNormalize(direction);
-    }
-    */
-
-
-
-    return direction;
-
-
-}
-
-void moveRectangle(sf::RectangleShape* rectangle, sf::Vector2f velocity, sf::Vector2f direction)
-{
-    sf::Vector2f dir(0.01f, 0.01f);
-    
-    (*rectangle).move(direction);
-}
