@@ -23,7 +23,6 @@ currentFrame{ rectangle, 0, FrameDirection::kForward }
     // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
     sprite.setScale(0.08f, 0.08f);
     sprite.setPosition(position);
-    sf::Texture texture;
     sf::IntRect spriteRect(0, 0, 538, 759);
     if (!texture.loadFromFile("black-ant-walk.png"))
     {
@@ -54,12 +53,44 @@ sim(simulator)
     // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
     sprite.setScale(0.08f, 0.08f);
     sprite.setPosition(position);
-    sf::IntRect spriteRect(0, 0, 538, 759);
-    if (!texture.loadFromFile("black-ant-walk.png"))
+    //sf::IntRect spriteRect(0, 0, 538, 759);
+   /* if (!texture.loadFromFile("black-ant-walk.png"))
     {
         cout << "error loading sprite" << endl << endl;
     }
-    setTexture(&texture, &spriteRect);
+    setTexture(texture, spriteRect);*/
+}
+
+Ant::Ant(sf::Texture& t, Simulator* simulator) :
+    speed(350),
+    sigmaU(0),
+    sigmaV(0),
+    u(0),
+    v(0),
+    stepSize(20),
+    animLength(0.005),
+    moving(false),
+    lengths{ 10, 20, 30, 200, 500 },
+    atDestination(true),
+    currentFrame{ rectangle, 0, FrameDirection::kForward },
+    sim(simulator),
+    texture(t),
+    rectangle(sf::IntRect(0,0,538,759))
+{
+    position = sf::Vector2f(75, 75);//current position.
+    destination = sf::Vector2f(75, 75);
+    velocity = sf::Vector2f(0, 0);//speed at which we are moving.
+    direction = sf::Vector2f(0, 0);//direction we are moving in.
+    //width 538 length 759
+    // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
+    double scale = sim->getRandomDouble();
+    setSpeed(150 + scale * 200);
+    
+    sprite.setScale(0.035f + scale * 0.03, 0.035f + scale * 0.03);
+    sprite.setPosition(position);
+    sprite.setTexture(t);
+    sprite.setTextureRect(rectangle);
+   
 }
 
 Ant::Ant(sf::IntRect rectangle, Simulator *simulator):

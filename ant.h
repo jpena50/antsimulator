@@ -41,6 +41,7 @@ private:
 public:
     Ant();
     Ant(Simulator* simulator);
+    Ant(sf::Texture& t, Simulator* simulator);
     Ant(sf::IntRect rectangle, Simulator* simulator);
     Ant(sf::Texture* texture, sf::IntRect* spriteRect, Simulator* simulator);
     void input();

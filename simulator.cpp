@@ -1,7 +1,7 @@
 #include "simulator.h"
 #include "ant.h"
 
-#define NUM_ANTS 10
+#define NUM_ANTS 100
 
 using namespace std;
 
@@ -31,19 +31,22 @@ void Simulator::run()
     sf::Time current;
     sf::Time elapsed;
     sf::Clock clock;
-    sf::Texture texture;
-    sf::IntRect spriteRect(0, 0, 538, 759);
     RNG rng();
+    spriteRect = sf::IntRect(0, 0, 538, 759);
+
     if (!texture.loadFromFile("black-ant-walk.png"))
     {
         cout << "error loading sprite" << endl << endl;
     }
+    sf::Texture& ref = texture;
+    
 
   
     //my textures are not rendering. why??
     for (int i = 0; i < NUM_ANTS; i++)
     {
-        ants.push_back(Ant(this));
+        Ant baby(ref,this);
+        ants.push_back(baby);
     }
 
 
@@ -111,7 +114,7 @@ double Simulator::getRandomDouble()
 
 
 
-//why is ants not have any elements in it?
+
 void Simulator::updateAnts(double time, double dt)
 {
     for (iter = ants.begin(); iter != ants.end(); iter++)

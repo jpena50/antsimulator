@@ -28,4 +28,6 @@ private:
 	RNG rng;
 	vector<Ant> ants;
 	vector<Ant>::iterator iter;
+	sf::Texture texture;
+	sf::IntRect spriteRect;
 };
