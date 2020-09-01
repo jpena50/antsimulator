@@ -13,6 +13,7 @@
 *.sln
 *.vcxproj.filters
 sfml_app.cpp
+CodeGraphData/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

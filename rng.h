@@ -1,15 +1,12 @@
 #pragma once
-#include "includes.h"
-#define _USE_MATH_DEFINES
-
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <string>
-#include <cmath>
 #include <random>
-#include <cfloat>
+#include <iostream>
+#include <time.h>  
+
+using namespace std;
 
 
+class Calculator;
 class RNG 
 {
 public:

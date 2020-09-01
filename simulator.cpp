@@ -1,7 +1,5 @@
 #include "simulator.h"
-#include "ant.h"
-
-#define NUM_ANTS 100
+#define NUM_ANTS 20
 
 using namespace std;
 
@@ -31,7 +29,9 @@ void Simulator::run()
     sf::Time current;
     sf::Time elapsed;
     sf::Clock clock;
-    RNG rng();
+    RNG rng;
+    Calculator calc;
+    
     spriteRect = sf::IntRect(0, 0, 538, 759);
 
     if (!texture.loadFromFile("black-ant-walk.png"))
@@ -39,13 +39,15 @@ void Simulator::run()
         cout << "error loading sprite" << endl << endl;
     }
     sf::Texture& ref = texture;
+    sf::RenderWindow& win = window;
+
     
 
   
     //my textures are not rendering. why??
     for (int i = 0; i < NUM_ANTS; i++)
     {
-        Ant baby(ref,this);
+        Ant baby(ref,rng); 
         ants.push_back(baby);
     }
 

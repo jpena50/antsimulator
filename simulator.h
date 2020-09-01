@@ -1,8 +1,8 @@
 #pragma once
-#include "includes.h"
-#include "rng.h"
+
 #include <vector>
 #include "ant.h"
+#include "calculations.h"
 
 class Ant;
 
@@ -30,4 +30,5 @@ private:
 	vector<Ant>::iterator iter;
 	sf::Texture texture;
 	sf::IntRect spriteRect;
+	Calculator calc;
 };

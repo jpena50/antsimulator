@@ -2,6 +2,28 @@
 
 using namespace std;
 
+Calculator::Calculator()
+{
+
+}
+
+Calculator::Calculator(RNG rng2) :
+rng(rng2)
+{
+
+}
+
+double Calculator::getRandomDouble()
+{
+
+    return rng.generateRandomDouble();
+}
+
+void Calculator::setRNG(RNG rng)
+{
+    this->rng = rng;
+}
+
 
 
 float degToRad(float angle)
@@ -47,19 +69,24 @@ sf::Vector2f getNormalizedVector(sf::Vector2f v1, sf::Vector2f v2)
 
     return v3;
 }
+float uniformAngle(double randomNum)
+{
+    return 2 * M_PI * randomNum;
+}
 float standardNormal()
 {
-   /* standardNormalGenerate = !standardNormalGenerate;
+
+   /*standardNormalGenerate = !standardNormalGenerate;
     if (standardNormalGenerate)
     {
         return standardNormal.y;
-    }
+    }*/
 
-    while (float u < FLT_EPSILON)
+    /*while (float u < FLT_EPSILON)
     {
         float u = rng->(generator);
-    }
-    */
+    }*/
+    
     return 0.f;
 
 }
@@ -112,3 +139,4 @@ position.x += velocity.x * timeElapsed;
 position.y += velocity.y * timeElapsed;
 
 */
+

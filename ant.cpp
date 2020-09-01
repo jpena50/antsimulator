@@ -1,67 +1,9 @@
 #include "ant.h"
 
 
-Ant::Ant():
-speed(350),
-sigmaU(0),
-sigmaV(0),
-u(0),
-v(0),
-stepSize(20),
-animLength(0.005),
-moving(false),
-lengths{ 10, 20, 30, 200, 500 },
-atDestination(true),
-currentFrame{ rectangle, 0, FrameDirection::kForward }
 
-{
-    position = sf::Vector2f(75, 75);//current position.
-    destination = sf::Vector2f(75, 75);
-    velocity = sf::Vector2f(0, 0);//speed at which we are moving.
-    direction = sf::Vector2f(0, 0);//direction we are moving in.
-    //width 538 length 759
-    // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
-    sprite.setScale(0.08f, 0.08f);
-    sprite.setPosition(position);
-    sf::IntRect spriteRect(0, 0, 538, 759);
-    if (!texture.loadFromFile("black-ant-walk.png"))
-    {
-        cout << "error loading sprite" << endl << endl;
-    }
-    setTexture(&texture, &spriteRect);
-}
-
-Ant::Ant(Simulator* simulator):
-speed(350),
-sigmaU(0),
-sigmaV(0),
-u(0),
-v(0),
-stepSize(20),
-animLength(0.005),
-moving(false),
-lengths{ 10, 20, 30, 200, 500 },
-atDestination(true),
-currentFrame{ rectangle, 0, FrameDirection::kForward },
-sim(simulator)
-{
-    position = sf::Vector2f(75, 75);//current position.
-    destination = sf::Vector2f(75, 75);
-    velocity = sf::Vector2f(0, 0);//speed at which we are moving.
-    direction = sf::Vector2f(0, 0);//direction we are moving in.
-    //width 538 length 759
-    // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
-    sprite.setScale(0.08f, 0.08f);
-    sprite.setPosition(position);
-    //sf::IntRect spriteRect(0, 0, 538, 759);
-   /* if (!texture.loadFromFile("black-ant-walk.png"))
-    {
-        cout << "error loading sprite" << endl << endl;
-    }
-    setTexture(texture, spriteRect);*/
-}
-
-Ant::Ant(sf::Texture& t, Simulator* simulator) :
+//need to think about how this will handle textures if I want to keep this constructor.
+Ant::Ant(RNG& rng1) :
     speed(350),
     sigmaU(0),
     sigmaV(0),
@@ -73,80 +15,56 @@ Ant::Ant(sf::Texture& t, Simulator* simulator) :
     lengths{ 10, 20, 30, 200, 500 },
     atDestination(true),
     currentFrame{ rectangle, 0, FrameDirection::kForward },
-    sim(simulator),
-    texture(t),
-    rectangle(sf::IntRect(0,0,538,759))
+    rng(rng1)
+
 {
+    windowSize = sf::Vector2f(1000, 800);
     position = sf::Vector2f(75, 75);//current position.
     destination = sf::Vector2f(75, 75);
     velocity = sf::Vector2f(0, 0);//speed at which we are moving.
     direction = sf::Vector2f(0, 0);//direction we are moving in.
     //width 538 length 759
-    // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
-    double scale = sim->getRandomDouble();
-    setSpeed(150 + scale * 200);
-    
-    sprite.setScale(0.035f + scale * 0.03, 0.035f + scale * 0.03);
-    sprite.setPosition(position);
-    sprite.setTexture(t);
-    sprite.setTextureRect(rectangle);
-   
-}
-
-Ant::Ant(sf::IntRect rectangle, Simulator *simulator):
-speed(350),
-sigmaU(0),
-sigmaV(0),
-u(0),
-v(0),
-stepSize(20),
-animLength(0.005), 
-moving(false), 
-lengths{10, 20, 30, 200, 500}, 
-atDestination(true),
-currentFrame{ rectangle, 0, FrameDirection::kForward },
-sim(simulator)
-
-{
-    position = sf::Vector2f (75, 75);//current position.
-    destination = sf::Vector2f(75, 75);
-    velocity = sf::Vector2f(0, 0);//speed at which we are moving.
-    direction = sf::Vector2f(0,0);//direction we are moving in.
-    //width 538 length 759
-    // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
     sprite.setScale(0.08f, 0.08f);
     sprite.setPosition(position);
+    sf::IntRect spriteRect(0, 0, 538, 759);
     if (!texture.loadFromFile("black-ant-walk.png"))
     {
         cout << "error loading sprite" << endl << endl;
     }
-    setTexture(texture, rectangle);
+    setTexture(&texture, &spriteRect);
 }
 
-Ant::Ant(sf::Texture* texture, sf::IntRect* spriteRect, Simulator* simulator):
-speed(350),
-sigmaU(0),
-sigmaV(0),
-u(0),
-v(0),
-stepSize(20),
-animLength(0.005),
-moving(false),
-lengths{ 10, 20, 30, 200, 500 },
-atDestination(true),
-currentFrame{ rectangle, 0, FrameDirection::kForward },
-sim(simulator)
-
-{
+Ant::Ant(sf::Texture& t, RNG& rng1) :
+    speed(350),
+    sigmaU(0),
+    sigmaV(0),
+    u(0),
+    v(0),
+    dir(0),
+    stepSize(20),
+    animLength(0.005),
+    moving(false),
+    lengths{ 10, 20, 30, 200, 500 },
+    atDestination(true),
+    currentFrame{ rectangle, 0, FrameDirection::kForward },
+    texture(t),
+    rectangle(sf::IntRect(0, 0, 538, 759)),\
+    rng(rng1)
+  {
+    windowSize = sf::Vector2f(1000, 800);
     position = sf::Vector2f(75, 75);//current position.
     destination = sf::Vector2f(75, 75);
     velocity = sf::Vector2f(0, 0);//speed at which we are moving.
     direction = sf::Vector2f(0, 0);//direction we are moving in.
     //width 538 length 759
-    // sprite.setScale(0.025f,0.025f);// target scale 0.05; stream scale 0.1;
-    sprite.setScale(0.08f, 0.08f);
+    double scale = rng.generateRandomDouble();
+    setSpeed(150 + scale * 200);
+
+    sprite.setScale(0.035f + scale * 0.03, 0.035f + scale * 0.03);
     sprite.setPosition(position);
-    setTexture(texture, spriteRect);
+    sprite.setTexture(t);
+    sprite.setTextureRect(rectangle);
+
 }
 
 
@@ -190,10 +108,10 @@ void Ant::nextMove()
 
     if (atDestination)
     {
-        double number = sim->getRandomDouble();
-        destination.x = number * sim->getWindowSize().x;
-        number = sim->getRandomDouble();
-        destination.y = number * sim->getWindowSize().y;
+        double number = rng.generateRandomDouble();
+        destination.x = number * windowSize.x;
+        number = rng.generateRandomDouble();
+        destination.y = number * windowSize.y;
         
 
         //cout << "destination (x,y) = ";
@@ -299,12 +217,6 @@ void Ant::setTexture(sf::Texture* t, sf::IntRect* spriteRect)
     sprite.setTexture(texture);
     sprite.setTextureRect(rectangle);
 }
-void Ant::setTexture(sf::Texture t, sf::IntRect spriteRect)
-{
-    currentFrame.rect = spriteRect;
-    sprite.setTexture(t);
-    sprite.setTextureRect(spriteRect);
-}
 void Ant::setRectangle(sf::IntRect* rect)
 {
     rectangle = *rect;
@@ -319,9 +231,16 @@ void Ant::setPosition(sf::Vector2f p)
     position.x = p.x;
     position.y = p.y;
 }
-void Ant::setSimulator(Simulator *simulator)
+void Ant::setRNG(RNG rng1)
 {
-    sim = simulator;
+    rng = rng1;
+}
+void Ant::setWindow(sf::RenderWindow window)
+{
+}
+void Ant::setWindowSize(sf::Vector2f size)
+{
+    windowSize = size;
 }
 float Ant::getSpeed()
 {
@@ -389,8 +308,9 @@ sf::Vector2f Ant::levyFlight()
     */
 
 
-    //u = standardNormal() * sigmaU * stepSize;
-    //v = standardNormal() * sigmaV * stepSize;
+    dir = uniformAngle(rng.generateRandomDouble());
+    u = standardNormal() * sigmaU * stepSize;
+    v = standardNormal() * sigmaV * stepSize;
 
 
     /*

@@ -1,10 +1,7 @@
 #pragma once 
 #define _USE_MATH_DEFINES
+#include "calculations.h"
 
-#include "simulator.h"
-#include <cmath>
-
-class Simulator;
 
 enum class FrameDirection { kForward = 1, kReverse = -1 };
 
@@ -17,7 +14,6 @@ struct Frame {
 class Ant
 {
 private:
-    Simulator * sim;
     sf::Vector2f position;
     sf::Vector2f velocity;
     sf::Vector2f direction;
@@ -25,6 +21,9 @@ private:
     sf::Texture texture;
     sf::Sprite sprite;
     sf::IntRect rectangle;
+    sf::RenderWindow* window;
+    sf::Vector2f windowSize;
+    RNG& rng;
     Frame currentFrame;
     float lengths[5];
     double animLength;
@@ -33,17 +32,15 @@ private:
     float sigmaV;
     float u;
     float v;
+    float dir;
     float stepSize;
     bool moving;
     bool atDestination;
     
 
 public:
-    Ant();
-    Ant(Simulator* simulator);
-    Ant(sf::Texture& t, Simulator* simulator);
-    Ant(sf::IntRect rectangle, Simulator* simulator);
-    Ant(sf::Texture* texture, sf::IntRect* spriteRect, Simulator* simulator);
+    Ant(RNG& rng1);
+    Ant(sf::Texture& t, RNG& rng1);
     void input();
     void nextMove();
     void update(double time, double dt);
@@ -51,11 +48,12 @@ public:
     void updatePos(double time, double dt);
     void setRotation(sf::Vector2f velocity);
     void setTexture(sf::Texture* texture, sf::IntRect* spriteRect);
-    void setTexture(sf::Texture texture, sf::IntRect spriteRect);
     void setRectangle(sf::IntRect* rect);
     void setSpeed(float s);
     void setPosition(sf::Vector2f p);
-    void setSimulator(Simulator* sim);
+    void setRNG(RNG rng);
+    void setWindow(sf::RenderWindow window);
+    void setWindowSize(sf::Vector2f size);
     bool isClose(sf::Vector2f v1, sf::Vector2f v2);
     float getSpeed();
     sf::Sprite getSprite();
