@@ -13,6 +13,7 @@ public:
 	void run();
 	sf::Vector2u getWindowSize();
 	double getRandomDouble();
+	void updateAntsWindowSize(sf::Vector2f newSize);
 	void updateAnts(double t, double dt);
 	void drawAnts();
 private:

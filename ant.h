@@ -18,6 +18,7 @@ private:
     sf::Vector2f velocity;
     sf::Vector2f direction;
     sf::Vector2f destination;
+    sf::Vector2f previousPos;
     sf::Texture texture;
     sf::Sprite sprite;
     sf::IntRect rectangle;
@@ -27,6 +28,7 @@ private:
     Frame currentFrame;
     float lengths[5];
     double animLength;
+    float beta;
     float speed;
     float sigmaU;
     float sigmaV;
@@ -34,6 +36,7 @@ private:
     float v;
     float dir;
     float stepSize;
+    float distance;
     bool moving;
     bool atDestination;
     

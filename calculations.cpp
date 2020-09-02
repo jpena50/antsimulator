@@ -73,7 +73,11 @@ float uniformAngle(double randomNum)
 {
     return 2 * M_PI * randomNum;
 }
-float standardNormal()
+float clip(float minV, float maxV, float value)
+{
+    return std::max(minV, std::min(maxV, value));
+}
+float standardNormal(float u, double rand)
 {
 
    /*standardNormalGenerate = !standardNormalGenerate;
@@ -82,12 +86,11 @@ float standardNormal()
         return standardNormal.y;
     }*/
 
-    /*while (float u < FLT_EPSILON)
-    {
-        float u = rng->(generator);
-    }*/
-    
-    return 0.f;
+    float v = uniformAngle(rand);
+    float factor = sqrt(-2 * log(u));
+    float x = factor * cos(v);
+
+    return x;
 
 }
 float gamma(float z)

@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <cfloat>
+#include <algorithm>
 #include "rng.h"
 
 class RNG;
@@ -79,9 +80,11 @@ float getAngle(sf::Vector2f vector);
 ////////////////////////////////////////////////////////////
 sf::Vector2f getNormalizedVector(sf::Vector2f v1, sf::Vector2f v2);
 
-float standardNormal();
+float standardNormal(float u, double rand);
 
 float uniformAngle(double random);
+
+float clip(float min, float max, float value);
 
 
 

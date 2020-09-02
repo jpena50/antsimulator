@@ -61,15 +61,7 @@ void Simulator::run()
             if (ev.type == sf::Event::Resized)
             {
                 sf::Vector2f size = static_cast<sf::Vector2f>(window.getSize());
-
-                // Minimum size
-                if (size.x < 800)
-                    size.x = 800;
-                if (size.y < 600)
-                    size.y = 600;
-                cout << "x =" << size.x << endl;
-                cout << "y =" << size.y << endl << endl;
-                window.setView(sf::View(sf::FloatRect(0.f, 0.f, size.x, size.y)));
+                updateAntsWindowSize(size);
             }
         }
         //babyAntArray.input();
@@ -114,7 +106,11 @@ double Simulator::getRandomDouble()
 
 
 
-
+void Simulator::updateAntsWindowSize(sf::Vector2f newSize)
+{
+    for (iter = ants.begin(); iter != ants.end(); iter++)
+        iter->setWindowSize(newSize);
+}
 
 
 void Simulator::updateAnts(double time, double dt)

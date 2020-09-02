@@ -9,8 +9,9 @@ Ant::Ant(RNG& rng1) :
     sigmaV(0),
     u(0),
     v(0),
-    stepSize(20),
-    animLength(0.005),
+    stepSize(1000),
+    distance(0),
+    animLength(0.01),
     moving(false),
     lengths{ 10, 20, 30, 200, 500 },
     atDestination(true),
@@ -19,7 +20,9 @@ Ant::Ant(RNG& rng1) :
 
 {
     windowSize = sf::Vector2f(1000, 800);
-    position = sf::Vector2f(75, 75);//current position.
+    position = sf::Vector2f(500, 400);//current position.
+    previousPos = sf::Vector2f(500, 400);
+
     destination = sf::Vector2f(75, 75);
     velocity = sf::Vector2f(0, 0);//speed at which we are moving.
     direction = sf::Vector2f(0, 0);//direction we are moving in.
@@ -42,6 +45,7 @@ Ant::Ant(sf::Texture& t, RNG& rng1) :
     v(0),
     dir(0),
     stepSize(20),
+    distance(0),
     animLength(0.005),
     moving(false),
     lengths{ 10, 20, 30, 200, 500 },
@@ -49,10 +53,12 @@ Ant::Ant(sf::Texture& t, RNG& rng1) :
     currentFrame{ rectangle, 0, FrameDirection::kForward },
     texture(t),
     rectangle(sf::IntRect(0, 0, 538, 759)),\
-    rng(rng1)
+    rng(rng1),
+    beta(3/2)
   {
     windowSize = sf::Vector2f(1000, 800);
-    position = sf::Vector2f(75, 75);//current position.
+    position = sf::Vector2f(500, 400);//current position.
+    previousPos = sf::Vector2f(500, 400);
     destination = sf::Vector2f(75, 75);
     velocity = sf::Vector2f(0, 0);//speed at which we are moving.
     direction = sf::Vector2f(0, 0);//direction we are moving in.
@@ -64,6 +70,11 @@ Ant::Ant(sf::Texture& t, RNG& rng1) :
     sprite.setPosition(position);
     sprite.setTexture(t);
     sprite.setTextureRect(rectangle);
+
+    sigmaU = gamma(1 + beta) * sin(M_PI * beta / 2) / (gamma((1 + beta) / 2) * beta * powf(2, (beta - 1) / 2));
+    sigmaU = powf(sigmaU, 1 / beta);
+    sigmaV = 1;
+    
 
 }
 
@@ -108,15 +119,16 @@ void Ant::nextMove()
 
     if (atDestination)
     {
-        double number = rng.generateRandomDouble();
-        destination.x = number * windowSize.x;
-        number = rng.generateRandomDouble();
-        destination.y = number * windowSize.y;
-        
+        //double number = rng.generateRandomDouble();
+        //destination.x = number * windowSize.x;
+        //number = rng.generateRandomDouble();
+        //destination.y = number * windowSize.y;
+        //
 
-        //cout << "destination (x,y) = ";
-        //printVector(destination);
-        
+        ////cout << "destination (x,y) = ";
+        ////printVector(destination);
+
+        levyFlight();
         atDestination = false;
         return;
     }
@@ -276,10 +288,7 @@ sf::Vector2f Ant::levyFlight()
 
     */
 
-    float beta = 3 / 2;
-    sigmaU = gamma(1 + beta) * sin(M_PI * beta / 2) / (gamma((1 + beta) / 2) * beta * powf(2, (beta - 1) / 2));
-    sigmaU = powf(sigmaU, 1 / beta);
-    sigmaV = 1;
+    
 
     /*
     Levy flight function
@@ -307,10 +316,26 @@ sf::Vector2f Ant::levyFlight()
     xs[xs.length-1] + cos(direction) * distance
     */
 
+    
+    
+    
+    
 
     dir = uniformAngle(rng.generateRandomDouble());
-    u = standardNormal() * sigmaU * stepSize;
-    v = standardNormal() * sigmaV * stepSize;
+    u = standardNormal(rng.generateRandomDouble() ,rng.generateRandomDouble()) * sigmaU * stepSize;
+    v = standardNormal(rng.generateRandomDouble(), rng.generateRandomDouble()) * sigmaV * stepSize;
+    distance = u / pow(abs(v), 1 / beta);
+
+
+
+
+
+
+    destination.x = clip(0, windowSize.x, previousPos.x + cos(dir) * distance);
+    destination.y = clip(0, windowSize.y, previousPos.y + sin(dir) * distance);
+
+    previousPos = destination;
+
 
 
     /*
