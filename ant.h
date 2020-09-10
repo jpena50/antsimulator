@@ -42,7 +42,6 @@ private:
     
 
 public:
-    Ant(RNG& rng1);
     Ant(sf::Texture& t, RNG& rng1);
     void input();
     void nextMove();
@@ -53,7 +52,7 @@ public:
     void setTexture(sf::Texture* texture, sf::IntRect* spriteRect);
     void setRectangle(sf::IntRect* rect);
     void setSpeed(float s);
-    void setPosition(sf::Vector2f p);
+    void updateLocation(sf::Vector2f p);
     void setRNG(RNG rng);
     void setWindow(sf::RenderWindow window);
     void setWindowSize(sf::Vector2f size);
@@ -61,6 +60,6 @@ public:
     float getSpeed();
     sf::Sprite getSprite();
     sf::Vector2f getPosition();
-    sf::Vector2f levyFlight();
+    void levyFlight();
     
 };

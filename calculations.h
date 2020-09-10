@@ -5,22 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <cfloat>
-#include <algorithm>
 #include "rng.h"
-
-class RNG;
-
-class Calculator
-{
-public:
-	Calculator();
-	Calculator(RNG rng);
-	double getRandomDouble();
-	void setRNG(RNG rng);
-private:
-	RNG rng;
-};
-
 
 
 ////////////////////////////////////////////////////////////

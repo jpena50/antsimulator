@@ -7,13 +7,9 @@ using namespace std;
 
 int main()
 {
-
     Simulator sim;
     sim.run();
-
     return EXIT_SUCCESS;
-
-
 }
 
 

@@ -2,28 +2,6 @@
 
 using namespace std;
 
-Calculator::Calculator()
-{
-
-}
-
-Calculator::Calculator(RNG rng2) :
-rng(rng2)
-{
-
-}
-
-double Calculator::getRandomDouble()
-{
-
-    return rng.generateRandomDouble();
-}
-
-void Calculator::setRNG(RNG rng)
-{
-    this->rng = rng;
-}
-
 
 
 float degToRad(float angle)
@@ -53,19 +31,9 @@ sf::Vector2f vectorNormalize(sf::Vector2f vector)
 sf::Vector2f getNormalizedVector(sf::Vector2f v1, sf::Vector2f v2)
 {
     sf::Vector2f v3, v4;
-    float magnitude;
     v3.x = v2.x - v1.x;
     v3.y = v2.y - v1.y;
     v3 = vectorNormalize(v3);
-    //magnitude = vectorLength(v3);
-    //v3.x /= magnitude;
-    //v3.y /= magnitude;
-
-    //cout << "v3 = ";
-    //printVector(v3);
-
-    //cout << "v4 = ";
-    //printVector(v4);
 
     return v3;
 }
@@ -75,7 +43,9 @@ float uniformAngle(double randomNum)
 }
 float clip(float minV, float maxV, float value)
 {
-    return std::max(minV, std::min(maxV, value));
+    float val = std::max(minV, std::min(maxV, value));
+    
+        return val;
 }
 float standardNormal(float u, double rand)
 {
@@ -95,7 +65,7 @@ float standardNormal(float u, double rand)
 }
 float gamma(float z)
 {
-    return sqrt(2 * M_PI / z) * powf((1 / M_E) * (z + 1 / (12 * z - 1 / (10 * z))), z);
+    return sqrt(2 * M_PI / z) * powf((1 / M_E) * (z + 1. / (12 * z - 1 / (10 * z))), z);
 }
 float getAngle(sf::Vector2f vector)
 {

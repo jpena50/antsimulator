@@ -1,41 +1,13 @@
 #include "ant.h"
 
+#define WIN_SIZE_X 800
+#define WIN_SIZE_Y 600
+#define X_BOUND 5000
+#define Y_BOUND 5000
+#define START_X 2500
+#define START_Y 2500
 
 
-//need to think about how this will handle textures if I want to keep this constructor.
-Ant::Ant(RNG& rng1) :
-    speed(350),
-    sigmaU(0),
-    sigmaV(0),
-    u(0),
-    v(0),
-    stepSize(1000),
-    distance(0),
-    animLength(0.01),
-    moving(false),
-    lengths{ 10, 20, 30, 200, 500 },
-    atDestination(true),
-    currentFrame{ rectangle, 0, FrameDirection::kForward },
-    rng(rng1)
-
-{
-    windowSize = sf::Vector2f(1000, 800);
-    position = sf::Vector2f(500, 400);//current position.
-    previousPos = sf::Vector2f(500, 400);
-
-    destination = sf::Vector2f(75, 75);
-    velocity = sf::Vector2f(0, 0);//speed at which we are moving.
-    direction = sf::Vector2f(0, 0);//direction we are moving in.
-    //width 538 length 759
-    sprite.setScale(0.08f, 0.08f);
-    sprite.setPosition(position);
-    sf::IntRect spriteRect(0, 0, 538, 759);
-    if (!texture.loadFromFile("black-ant-walk.png"))
-    {
-        cout << "error loading sprite" << endl << endl;
-    }
-    setTexture(&texture, &spriteRect);
-}
 
 Ant::Ant(sf::Texture& t, RNG& rng1) :
     speed(350),
@@ -46,20 +18,20 @@ Ant::Ant(sf::Texture& t, RNG& rng1) :
     dir(0),
     stepSize(20),
     distance(0),
-    animLength(0.005),
+    animLength(0.015),
     moving(false),
     lengths{ 10, 20, 30, 200, 500 },
     atDestination(true),
     currentFrame{ rectangle, 0, FrameDirection::kForward },
     texture(t),
-    rectangle(sf::IntRect(0, 0, 538, 759)),\
+    rectangle(sf::IntRect(0, 0, 538, 759)),
     rng(rng1),
-    beta(3/2)
+    beta(1.5f)
   {
-    windowSize = sf::Vector2f(1000, 800);
-    position = sf::Vector2f(500, 400);//current position.
-    previousPos = sf::Vector2f(500, 400);
-    destination = sf::Vector2f(75, 75);
+    windowSize = sf::Vector2f(X_BOUND, Y_BOUND);
+    position = sf::Vector2f(START_X, START_Y);//current position.
+    previousPos = sf::Vector2f(START_X, START_Y);
+    destination = sf::Vector2f(START_X, START_Y);
     velocity = sf::Vector2f(0, 0);//speed at which we are moving.
     direction = sf::Vector2f(0, 0);//direction we are moving in.
     //width 538 length 759
@@ -71,7 +43,7 @@ Ant::Ant(sf::Texture& t, RNG& rng1) :
     sprite.setTexture(t);
     sprite.setTextureRect(rectangle);
 
-    sigmaU = gamma(1 + beta) * sin(M_PI * beta / 2) / (gamma((1 + beta) / 2) * beta * powf(2, (beta - 1) / 2));
+    sigmaU = gamma(1 + beta) * sin(M_PI * beta / 2) / (gamma((1 + beta) / 2) * (double)beta * powf(2, (beta - 1) / 2));
     sigmaU = powf(sigmaU, 1 / beta);
     sigmaV = 1;
     
@@ -119,15 +91,6 @@ void Ant::nextMove()
 
     if (atDestination)
     {
-        //double number = rng.generateRandomDouble();
-        //destination.x = number * windowSize.x;
-        //number = rng.generateRandomDouble();
-        //destination.y = number * windowSize.y;
-        //
-
-        ////cout << "destination (x,y) = ";
-        ////printVector(destination);
-
         levyFlight();
         atDestination = false;
         return;
@@ -143,6 +106,8 @@ void Ant::update(double time, double dt)
     nextMove();
     updatePos(time, dt);
     updateAnim(dt);
+    
+
 }
 void Ant::updateAnim(double dt)
 {
@@ -213,7 +178,7 @@ void Ant::updatePos(double time, double dt)
     velocity.y *= dt;
     setRotation(velocity);
     sprite.move(velocity);
-    setPosition(sprite.getPosition());
+    updateLocation(sprite.getPosition());
     moving = true;
 }
 void Ant::setRotation(sf::Vector2f velocity)
@@ -238,7 +203,7 @@ void Ant::setSpeed(float s)
 {
     speed = s;
 }
-void Ant::setPosition(sf::Vector2f p)
+void Ant::updateLocation(sf::Vector2f p)
 {
     position.x = p.x;
     position.y = p.y;
@@ -273,106 +238,31 @@ sf::Vector2f Ant::getPosition()
 {
     return position;
 }
-sf::Vector2f Ant::levyFlight()
+void Ant::levyFlight()
 {
 
     /*
-    need function to generate a random number uniformly distributed between 0 and n-1.
-        in example this is used to fill an array of x points and y points that is then manipulated for something.
-    need function to generate a random angle uniformly distributed in radians
-        angle for direction of levy flight
-    epsilon is used.
-        1e-16
-    gamma function to calculate sigmaU
-    sigmaV initially = 1
-
+    * lots of help from studying this javascript implementation.
+    https://gist.github.com/dominiccooney/2f1332b49076bf1c8929
     */
-
-    
-
-    /*
-    Levy flight function
-    Need a step size.
-    beta = 3/2;
-    gamma(z)
-    return Math.sqrt(2 * Math.PI / z) * Math.pow((1 / Math.E) * (z + 1 / (12 * z - 1 / (10 * z))), z); 
-      https://stackoverflow.com/questions/15454183/how-to-make-a-function-that-computes-the-factorial-for-numbers-with-decimals
-
-    */
-
-    /*
-    Levy flight step may need to be separate function
-    direction = uniformAngle();
-    u = standardNormal() * sigmaU * stepSize;
-    v = standardNormal() * sigmaV * stepSize;
-    distance = u / powf(abs(v), 1 / beta);
-
-    width/height is the window width/height or the available area for the ant to travel too.
-
-    push.xs(clip(0, width, xs[xs.length-1] + cos(direction) * distance));
-    push.ys(clip(0, height, ys[ys.length-1] + sin(direction) * distance));
-
-    this seems to be the final calculation that will give us our destination.
-    xs[xs.length-1] + cos(direction) * distance
-    */
-
-    
-    
-    
-    
-
     dir = uniformAngle(rng.generateRandomDouble());
     u = standardNormal(rng.generateRandomDouble() ,rng.generateRandomDouble()) * sigmaU * stepSize;
     v = standardNormal(rng.generateRandomDouble(), rng.generateRandomDouble()) * sigmaV * stepSize;
     distance = u / pow(abs(v), 1 / beta);
 
+    float levyX = previousPos.x + cos(dir) * distance;
+    float levyY = previousPos.y + sin(dir) * distance;
+
+    if (windowSize.x < levyX)
+        cout << "Levy flight produced an X value greater than max value!" << endl << "ValueX = " << levyX << endl;
+
+    if (windowSize.y < levyY)
+        cout << "Levy flight produced a Y value greater than max value!" << endl << "ValueY = " << levyY << endl;
 
 
-
-
-
-    destination.x = clip(0, windowSize.x, previousPos.x + cos(dir) * distance);
-    destination.y = clip(0, windowSize.y, previousPos.y + sin(dir) * distance);
-
+    destination.x = clip(0, windowSize.x, levyX);
+    destination.y = clip(0, windowSize.y, levyY);
     previousPos = destination;
 
-
-
-    /*
-    OTHER FUNCTIONS
-    https://gist.github.com/dominiccooney/2f1332b49076bf1c8929
-standardNormal() 
-{
-      sstandardNormal.generate = !standardNormal.generate;
-  if (standardNormal.generate) {
-    // There's a cached result.
-    return standardNormal.y;
-  }
-
-  do {
-   var u = Math.random();
-   var v = uniformAngle();
-  } while (u < Number.MIN_VALUE);
-
-  let factor = Math.sqrt(-2 * Math.log(u));
-  let x = factor * Math.cos(v);
-  standardNormal.y = factor * Math.sin(v);
-  return x;tandardNormal	
-}
-//////////////////////////////////////////////////////////////////////
-
-clip(min, max, value)
-{
-  return Math.max(min, Math.min(max, value));
-}
-
-
-
-
-
-    */
-
-
-    return sf::Vector2f();
 }
 
